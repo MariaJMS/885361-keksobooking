@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Мария Яковлева](https://up.htmlacademy.ru/javascript/16/user/885361).
-* Наставник: `Неизвестно`.
+* Наставник: [Павел Скрипкин](https://up.htmlacademy.ru/javascript/16/user/604273).
 
 ---
 
