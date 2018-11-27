@@ -114,19 +114,18 @@ var renderMapPins = function (notice) {
   mapPins.appendChild(fragment);
 };
 
-// добавление всех фотографий из массива PHOTOS в карточку объявления
-var photoInCard = document.createElement('img');
-photoInCard.classList.add('popup__photo');
-photoInCard.width = 45;
-photoInCard.height = 40;
-photoInCard.alt = 'Фотография жилья';
+var photoInCard = document.querySelector('#card').content.querySelector('.popup__photo');
+var createPhoto = function (photo) {
+  var photoElement = photoInCard.cloneNode(true);
+  photoElement.src = photo;
+
+  return photoElement;
+};
 
 var generatePhotoInCard = function () {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < PHOTOS.length; i++) {
-    var item = photoInCard.cloneNode(true);
-    item.src = PHOTOS[i];
-    fragment.appendChild(item);
+    fragment.appendChild(createPhoto(PHOTOS[i]));
   }
   return fragment;
 };
