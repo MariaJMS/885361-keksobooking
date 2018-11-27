@@ -113,6 +113,7 @@ var renderMapPins = function (notice) {
   }
   mapPins.appendChild(fragment);
 };
+
 // добавление всех фотографий из массива PHOTOS в карточку объявления
 var photoInCard = document.createElement('img');
 photoInCard.classList.add('popup__photo');
@@ -147,6 +148,9 @@ var createCards = function (notice) {
 
   return cardElement;
 };
+
+var firstPhoto = document.querySelector('#card').content.querySelector('.popup__photo');
+firstPhoto.remove('img:first-child');
 
 var parentElem = document.querySelector('.map');
 var nextSibling = document.querySelector('.map__filters-container');
