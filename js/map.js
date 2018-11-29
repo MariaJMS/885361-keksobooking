@@ -34,6 +34,8 @@ var MAX_ROOMS = 5;
 var MIN_GUESTS = 1;
 var MAX_GUESTS = 10;
 
+// var ESC_KEYCODE = 27;
+
 // генерируем случайный элемент массива
 var getRandomItem = function (array) {
   return array [Math.floor(Math.random() * array.length)];
@@ -88,10 +90,6 @@ var generateNotices = function () {
   }
   return notices;
 };
-
-// У блока .map уберем класс .map--faded
-var userDialog = document.querySelector('.map');
-userDialog.classList.remove('map--faded');
 
 // создаем DOM-элементы, соответствующие меткам на карте
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -161,5 +159,55 @@ var renderCards = function (notice) {
   parentElem.insertBefore(fragment, nextSibling);
 };
 
-renderMapPins(generateNotices());
-renderCards(generateNotices());
+// Отключаем поля формы
+var mapFeaturesElem = document.querySelector('.map__features');
+var formHeader = document.querySelectorAll('.ad-form-header');
+var formElement = document.querySelectorAll('.ad-form__element');
+var mapFilters = document.querySelectorAll('.map__filter');
+
+mapFeaturesElem.setAttribute('disabled', 'true');
+mapFilters.forEach(function (elem) {
+  elem.setAttribute('disabled', 'true');
+});
+formHeader.forEach(function (elem) {
+  elem.setAttribute('disabled', 'true');
+});
+formElement.forEach(function (elem) {
+  elem.setAttribute('disabled', 'true');
+});
+
+// Активация страницы
+var userDialog = document.querySelector('.map');
+var formDisabled = document.querySelector('.ad-form');
+var mapPinMain = document.querySelector('.map__pin--main');
+
+var unlockCard = function () {
+  userDialog.classList.remove('map--faded');
+  formDisabled.classList.remove('ad-form--disabled');
+  mapFeaturesElem.removeAttribute('disabled', 'true');
+  mapFilters.forEach(function (elem) {
+    elem.removeAttribute('disabled', 'true');
+  });
+  formHeader.forEach(function (elem) {
+    elem.removeAttribute('disabled', 'true');
+  });
+  formElement.forEach(function (elem) {
+    elem.removeAttribute('disabled', 'true');
+  });
+};
+
+// Заполнение поля адреса
+var address = document.querySelector('#address');
+var setAddress = function () {
+  address.value = mapPinMain.offsetLeft + ', ' + mapPinMain.offsetTop;
+  address.setAttribute('readonly', 'true');
+};
+
+var onMapPinMainMouseUp = function () {
+  unlockCard();
+  setAddress();
+  renderCards(generateNotices());
+  renderMapPins(generateNotices());
+};
+
+mapPinMain.addEventListener('mouseup', onMapPinMainMouseUp);
