@@ -36,6 +36,8 @@ var MAX_GUESTS = 10;
 
 var ESC_KEYCODE = 27;
 
+var idCard = document.querySelector('#card');
+
 // генерируем случайный элемент массива
 var getRandomItem = function (array) {
   return array [Math.floor(Math.random() * array.length)];
@@ -118,7 +120,7 @@ var renderMapPins = function (notice) {
   mapPins.appendChild(fragment);
 };
 
-var photoInCard = document.querySelector('#card').content.querySelector('.popup__photo');
+var photoInCard = idCard.content.querySelector('.popup__photo');
 var createPhoto = function (photo) {
   var photoElement = photoInCard.cloneNode(true);
   photoElement.src = photo;
@@ -135,7 +137,7 @@ var generatePhotoInCard = function () {
 };
 
 // создаем DOM-элементы объявления
-var mapCard = document.querySelector('#card').content.querySelector('.map__card');
+var mapCard = idCard.content.querySelector('.map__card');
 var createCards = function (notice, index) {
   var cardElement = mapCard.cloneNode(true);
   cardElement.querySelector('.popup__title').textContent = notice.offer.title;
@@ -155,7 +157,7 @@ var createCards = function (notice, index) {
   return cardElement;
 };
 
-var firstPhoto = document.querySelector('#card').content.querySelector('.popup__photo');
+var firstPhoto = idCard.content.querySelector('.popup__photo');
 firstPhoto.remove('img:first-child');
 
 var userDialog = document.querySelector('.map');
@@ -169,21 +171,14 @@ var renderCards = function (notice) {
 };
 
 // Отключаем поля формы
-var mapFeaturesElem = document.querySelector('.map__features');
-var formHeader = document.querySelectorAll('.ad-form-header');
-var formElement = document.querySelectorAll('.ad-form__element');
-var mapFilters = document.querySelectorAll('.map__filter');
+var fieldset = document.querySelectorAll('fieldset');
+var lockCard = function () {
+  fieldset.forEach(function (elem) {
+    elem.setAttribute('disabled', 'true');
+  });
+};
 
-mapFeaturesElem.setAttribute('disabled', 'true');
-mapFilters.forEach(function (elem) {
-  elem.setAttribute('disabled', 'true');
-});
-formHeader.forEach(function (elem) {
-  elem.setAttribute('disabled', 'true');
-});
-formElement.forEach(function (elem) {
-  elem.setAttribute('disabled', 'true');
-});
+lockCard();
 
 // Активация страницы
 var formDisabled = document.querySelector('.ad-form');
@@ -192,14 +187,7 @@ var mapPinMain = document.querySelector('.map__pin--main');
 var unlockCard = function () {
   userDialog.classList.remove('map--faded');
   formDisabled.classList.remove('ad-form--disabled');
-  mapFeaturesElem.removeAttribute('disabled', 'true');
-  mapFilters.forEach(function (elem) {
-    elem.removeAttribute('disabled', 'true');
-  });
-  formHeader.forEach(function (elem) {
-    elem.removeAttribute('disabled', 'true');
-  });
-  formElement.forEach(function (elem) {
+  fieldset.forEach(function (elem) {
     elem.removeAttribute('disabled', 'true');
   });
 };
