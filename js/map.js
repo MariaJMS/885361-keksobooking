@@ -93,6 +93,8 @@ var generateNotices = function () {
   return notices;
 };
 
+var notices = generateNotices();
+
 // создаем DOM-элементы, соответствующие меткам на карте
 var mapPin = document.querySelector('#pin').content.querySelector('.map__pin');
 var createMapPin = function (notice, index) {
@@ -182,7 +184,8 @@ lockCard();
 
 // Активация страницы
 var formDisabled = document.querySelector('.ad-form');
-var mapPinMain = document.querySelector('.map__pin--main');
+var setup = document.querySelector('.map__pins');
+var mapPinMain = setup.querySelector('.map__pin--main');
 
 var unlockCard = function () {
   userDialog.classList.remove('map--faded');
@@ -199,11 +202,84 @@ var setAddress = function () {
   address.setAttribute('readonly', 'true');
 };
 
-var onKeydownEsc = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    hideActiveMapCard();
-  }
+// перемещение главной метки
+var mapPinMainWidth = mapPinMain.offsetWidth;
+var mapPinMainHeight = mapPinMain.offsetHeight;
+var mainPinHeight = mapPinMainHeight + 22;
+var mapWidth = userDialog.offsetWidth;
+
+var mapPinsLimits = {
+  MIN_Y: 130 - mainPinHeight,
+  MAX_Y: 630,
+  MIN_X: 0 - mapPinMainWidth / 2,
+  MAX_X: mapWidth - mapPinMainWidth / 2
 };
+
+var getValueInLimit = function (value, min, max) {
+  if (value < min) {
+    value = min;
+  }
+
+  if (value > max) {
+    value = max;
+  }
+
+  return value;
+};
+
+var pinCoords = function (coords) {
+  coords.x = getValueInLimit(coords.x, mapPinsLimits.MIN_X, mapPinsLimits.MAX_X);
+  coords.y = getValueInLimit(coords.y, mapPinsLimits.MIN_Y, mapPinsLimits.MAX_Y);
+
+  return coords;
+};
+
+mapPinMain.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    var resultCoords = {
+      x: mapPinMain.offsetLeft - shift.x,
+      y: mapPinMain.offsetTop - shift.y
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    pinCoords(resultCoords);
+
+    mapPinMain.style.top = resultCoords.y + 'px';
+    mapPinMain.style.left = resultCoords.x + 'px';
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+    var mainPinY = Math.ceil(mapPinMain.offsetTop + mainPinHeight);
+    var mainPinX = Math.ceil(mapPinMain.offsetLeft + mapPinMainWidth / 2);
+    address.setAttribute('value', mainPinX + ' , ' + mainPinY);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+  mapPinMain.addEventListener('mouseup', onMapPinMainMouseUp);
+});
 
 // открытие, закрытие карточки объявления по клику на метке
 var activeMapCard;
@@ -211,6 +287,12 @@ var activeMapCard;
 var hideActiveMapCard = function () {
   if (activeMapCard !== undefined) {
     activeMapCard.classList.add('visually-hidden');
+  }
+};
+
+var onKeydownEsc = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    hideActiveMapCard();
   }
 };
 
@@ -232,12 +314,12 @@ var onCloseMapCardClick = function () {
 var onMapPinMainMouseUp = function () {
   unlockCard();
   setAddress();
-  renderMapPins(generateNotices());
-  renderCards(generateNotices());
+  renderMapPins(notices);
+  renderCards(notices);
   onCloseMapCardClick();
 };
 
-mapPinMain.addEventListener('mouseup', onMapPinMainMouseUp);
+// mapPinMain.addEventListener('mouseup', onMapPinMainMouseUp);
 
 // установка соответствия количества гостей количеству комнат
 var roomNumber = document.querySelector('#room_number');
