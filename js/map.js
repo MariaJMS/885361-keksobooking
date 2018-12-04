@@ -93,6 +93,8 @@ var generateNotices = function () {
   return notices;
 };
 
+var notices = generateNotices();
+
 // создаем DOM-элементы, соответствующие меткам на карте
 var mapPin = document.querySelector('#pin').content.querySelector('.map__pin');
 var createMapPin = function (notice, index) {
@@ -312,8 +314,8 @@ var onCloseMapCardClick = function () {
 var onMapPinMainMouseUp = function () {
   unlockCard();
   setAddress();
-  renderMapPins(generateNotices());
-  renderCards(generateNotices());
+  renderMapPins(notices);
+  renderCards(notices);
   onCloseMapCardClick();
 };
 
