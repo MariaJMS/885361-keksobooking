@@ -129,7 +129,7 @@
   var onMapPinMainMouseUp = function () {
     unlockCard();
     window.form.setAddress();
-    window.pin.renderMapPins(window.data.notices);
+    window.pin.renderMapPins(window.pin.notices);
     // renderCards(window.data.notices);
     onCloseMapCardClick();
   };

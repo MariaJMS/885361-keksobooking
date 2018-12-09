@@ -67,13 +67,14 @@
 
   var nextSibling = document.querySelector('.map__filters-container');
   var renderCards = function (notice) {
+    console.log(notice);
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < notice.length; i++) {
+    for (var i = 0; i < window.pin.NUMBER_NOTICE; i++) {
       fragment.appendChild(createCards(notice[i], i));
     }
     userDialog.insertBefore(fragment, nextSibling);
   };
 
-  renderCards(window.data.notices);
+  renderCards(window.pin.notices);
 
 })();
