@@ -2,6 +2,7 @@
 
 (function () {
 
+  var main = document.querySelector('main');
   var NUMBER_NOTICE = 8;
 
   // создаем DOM-элементы, соответствующие меткам на карте
@@ -50,31 +51,46 @@
         }
       };
     }
-    var fragment = document.createDocumentFragment();
-    for (i = 0; i < NUMBER_NOTICE; i++) {
-      fragment.appendChild(createMapPin(notices[i], i));
+  };
+
+  var fragment = document.createDocumentFragment();
+  var generateMapPins = function (arrNotices) {
+    for (var i = 0; i < arrNotices.length; i++) {
+      fragment.appendChild(createMapPin(arrNotices[i], i));
     }
     mapPins.appendChild(fragment);
   };
 
+  // окно с ошибкой отправки формы
   var showError = function (errMes) {
-    var node = document.createElement('div');
-    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
-    node.style.position = 'absolute';
-    node.style.left = 0;
-    node.style.right = 0;
-    node.style.fontSize = '30px';
+    var error = document.querySelector('#error').content.querySelector('.error');
+    var errorElement = error.cloneNode(true);
+    var errMsg = errorElement.querySelector('.error__message');
+    var errBtn = errorElement.querySelector('.error__button');
+    errMsg.textContent = errMes;
 
-    node.textContent = errMes;
-    document.body.insertAdjacentElement('afterbegin', node);
+    main.insertAdjacentElement('afterbegin', errorElement);
+    document.addEventListener('keydown', closeError);
+    errorElement.addEventListener('click', closeError);
+    errBtn.addEventListener('click', closeError);
   };
 
-  window.load(renderMapPins, showError);
+  var closeError = function () {
+    var errorElement = document.querySelector('.error');
+    main.removeChild(errorElement);
+    document.removeEventListener('keydown', closeError);
+    errorElement.removeEventListener('click', closeError);
+    window.form.onSubmit();
+  };
+
+  window.backend.loadData(renderMapPins, showError);
 
   window.pin = {
     renderMapPins: renderMapPins,
     notices: notices,
-    NUMBER_NOTICE: NUMBER_NOTICE
+    NUMBER_NOTICE: NUMBER_NOTICE,
+    generateMapPins: generateMapPins,
+    showError: showError
   };
 
 })();

@@ -12,10 +12,10 @@
     return photoElement;
   };
 
-  var generatePhotoInCard = function () {
+  var generatePhotoInCard = function (photos) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < window.data.PHOTOS.length; i++) {
-      fragment.appendChild(createPhoto(window.data.PHOTOS[i]));
+    for (var i = 0; i < photos.length; i++) {
+      fragment.appendChild(createPhoto(photos[i]));
     }
     return fragment;
   };
@@ -68,12 +68,16 @@
   var nextSibling = document.querySelector('.map__filters-container');
   var renderCards = function (notice) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < window.pin.NUMBER_NOTICE; i++) {
+    for (var i = 0; i < notice.length; i++) {
       fragment.appendChild(createCards(notice[i], i));
     }
     userDialog.insertBefore(fragment, nextSibling);
   };
 
   renderCards(window.pin.notices);
+
+  window.card = {
+    renderCards: renderCards
+  };
 
 })();

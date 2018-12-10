@@ -10,13 +10,13 @@
     'Уютное бунгало далеко от моря',
     'Неуютное бунгало по колено в воде'];
   var TYPES = ['palace', 'flat', 'house', 'bungalo']; */
-  /*  var OFFER_TYPES = {
+  var OFFER_TYPES = {
     flat: 'Квартира',
     palace: 'Дворец',
     house: 'Домик',
     bungalo: 'Бунгало'
   };
-  var CHECKIN = ['12:00', '13:00', '14:00'];
+  /* var CHECKIN = ['12:00', '13:00', '14:00'];
   var CHECKOUT = ['12:00', '13:00', '14:00'];
   var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -59,9 +59,7 @@
   };*/
 
   window.data = {
-  //  notices: notices,
-  //  OFFER_TYPES: dataArrItem.offer.type,
-  //  PHOTOS: dataArrItem.offer.photos,
+    OFFER_TYPES: OFFER_TYPES,
     getRandomItem: getRandomItem
   };
 

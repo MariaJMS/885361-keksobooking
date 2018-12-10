@@ -2,7 +2,7 @@
 
 (function () {
 
-  window.load = function (onLoad, onError) {
+  var loadData = function (onLoad, onError) {
 
     var URL = 'https://js.dump.academy/keksobooking/data';
     var xhr = new XMLHttpRequest();
@@ -46,7 +46,7 @@
     xhr.send();
   };
 
-  window.save = function (data, onLoad, onError) {
+  var saveData = function (data, onLoad, onError) {
 
     var URL = 'https://js.dump.academy/keksobooking';
     var xhr = new XMLHttpRequest();
@@ -85,6 +85,11 @@
     });
 
     xhr.send(data);
+  };
+
+  window.backend = {
+    loadData: loadData,
+    saveData: saveData
   };
 
 })();
