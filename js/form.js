@@ -78,8 +78,8 @@
     }
     var mapPins = document.querySelectorAll('button.map__pin:not(.map__pin--main)');
     var pinsContainer = document.querySelector('.map__pins');
-    for (var t = 0; t < mapPins.length; t++) {
-      pinsContainer.removeChild(mapPins[t]);
+    for (var i = 0; i < mapPins.length; i++) {
+      pinsContainer.removeChild(mapPins[i]);
     }
   };
 
@@ -99,13 +99,14 @@
     document.removeEventListener('keydown', closeSuccess);
   };
 
-  // сброс формы при нажатии кнопки "Опубликовать"
   var saveForm = function () {
     onSubmit();
+    showSuccess();
   };
+
   adForm.addEventListener('submit', function (evt) {
     window.backend.saveData(new FormData(adForm), saveForm, window.pin.showError);
-    showSuccess();
+    // showSuccess();
     evt.preventDefault();
   });
 
