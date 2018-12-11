@@ -23,6 +23,20 @@
   // установка соответствия количества гостей количеству комнат
   var roomNumber = document.querySelector('#room_number');
   var capacity = document.querySelector('#capacity');
+  var optionCapasity = capacity.querySelectorAll('option:nth-child(-n+3)');
+  var lastCapasity = capacity.querySelector('option:last-child');
+
+  var addDisabled = function () {
+    optionCapasity.forEach(function (elem) {
+      elem.setAttribute('disabled', true);
+    });
+  };
+
+  var removeDisabled = function () {
+    optionCapasity.forEach(function (elem) {
+      elem.removeAttribute('disabled', true);
+    });
+  };
 
   var maxCapacity = {
     '1': 1,
@@ -35,26 +49,44 @@
     var roomsNumber = roomNumber.value;
     var guests = parseInt(capacity.value, 10);
     var possibleCapacity = maxCapacity[roomsNumber];
-    if (guests > possibleCapacity) {
-      capacity.setAttribute('disable', true);
-      capacity.setCustomValidity('Недопустимое количество мест для выбранного числа комнат');
-    } else if (guests === 0 && possibleCapacity > 0) {
-      capacity.setAttribute('disable', true);
+    if (roomsNumber === 100) {
       capacity.setCustomValidity('Комнаты не для гостей');
+      addDisabled();
+      lastCapasity.removeAttribute('disabled', true);
     } else {
-      capacity.setAttribute('disable', false);
-      capacity.setCustomValidity('');
+      if (guests > possibleCapacity || guests === 0) {
+        capacity.setCustomValidity('Недопустимое количество мест для выбранного числа комнат');
+        removeDisabled();
+        lastCapasity.setAttribute('disabled', true);
+      } else {
+        capacity.setCustomValidity('');
+      }
     }
   };
 
   validСapacity();
 
-  var onCapacityChange = function () {
-    validСapacity();
-  };
+  capacity.addEventListener('change', validСapacity);
+  roomNumber.addEventListener('change', validСapacity);
 
-  capacity.addEventListener('change', onCapacityChange);
-  roomNumber.addEventListener('change', onCapacityChange);
+  // ограничения на поле "Заголовок"
+  var titleInput = adForm.querySelector('#title');
+  titleInput.setAttribute('required', true);
+
+  titleInput.addEventListener('input', function (evt) {
+    var target = evt.target;
+    if (target.value.length < 30) {
+      target.setCustomValidity('Заголовок должен содержать не менее 30 символов');
+    } if (target.value.length > 100) {
+      target.setCustomValidity('Заголовок должен содержать не более 100 символов');
+    } else {
+      target.setCustomValidity('');
+    }
+  });
+
+  // ограничения на поле "Цена"
+  var priceInput = adForm.querySelector('#price');
+  priceInput.setAttribute('required', true);
 
   var card = window.map.userDialog.querySelector('.map__card');
   var mapWidth = window.map.mapWidth;
@@ -85,7 +117,7 @@
 
   // сообщение об успешной отправке формы
   var main = document.querySelector('main');
-  var showSuccess = function () {
+  var onMainShowSuccess = function () {
     var success = document.querySelector('#success').content.querySelector('.success');
     var successElement = success.cloneNode(true);
     successElement.addEventListener('mousedown', closeSuccess);
@@ -101,7 +133,7 @@
 
   var saveForm = function () {
     onSubmit();
-    showSuccess();
+    onMainShowSuccess();
   };
 
   adForm.addEventListener('submit', function (evt) {

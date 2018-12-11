@@ -40,7 +40,7 @@
     cardElement.querySelector('.popup__title').textContent = notice.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = notice.offer.address;
     cardElement.querySelector('.popup__text--price').textContent = notice.offer.price + '₽/ночь';
-    cardElement.querySelector('.popup__type').textContent = window.data.OFFER_TYPES[notice.offer.type];
+    cardElement.querySelector('.popup__type').textContent = window.data.OfferTypes[notice.offer.type];
     cardElement.querySelector('.popup__text--capacity').textContent = notice.offer.rooms + ' комнаты для ' + notice.offer.guests + ' гостей';
     cardElement.querySelector('.popup__text--time').textContent = 'Заезд после' + notice.offer.checkin + ', выезд до' + notice.offer.checkout;
     cardElement.querySelector('.popup__features').appendChild(getPopupFeatureList(notice.offer.features));

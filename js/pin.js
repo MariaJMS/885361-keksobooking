@@ -24,39 +24,20 @@
   };
 
   var mapPins = document.querySelector('.map__pins');
+
   var notices = [];
   var renderMapPins = function (dataArr) {
     for (var i = 0; i < NUMBER_NOTICE; i++) {
       var dataArrItem = window.data.getRandomItem(dataArr);
-      notices[i] = {
-        author: {
-          avatar: dataArrItem.author.avatar
-        },
-        offer: {
-          title: dataArrItem.offer.title,
-          address: dataArrItem.offer.address,
-          price: dataArrItem.offer.price,
-          type: dataArrItem.offer.type,
-          rooms: dataArrItem.offer.rooms,
-          guests: dataArrItem.offer.guests,
-          checkin: dataArrItem.offer.checkin,
-          checkout: dataArrItem.offer.checkout,
-          features: dataArrItem.offer.features,
-          description: dataArrItem.offer.description,
-          photos: dataArrItem.offer.photos
-        },
-        location: {
-          x: dataArrItem.location.x,
-          y: dataArrItem.location.y,
-        }
-      };
+      notices.push(dataArrItem);
     }
+    return notices;
   };
 
   var fragment = document.createDocumentFragment();
-  var generateMapPins = function (arrNotices) {
-    for (var i = 0; i < arrNotices.length; i++) {
-      fragment.appendChild(createMapPin(arrNotices[i], i));
+  var generateMapPins = function (dataArr) {
+    for (var i = 0; i < NUMBER_NOTICE; i++) {
+      fragment.appendChild(createMapPin(dataArr[i], i));
     }
     mapPins.appendChild(fragment);
   };

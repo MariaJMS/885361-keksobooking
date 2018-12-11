@@ -10,7 +10,7 @@
     'Уютное бунгало далеко от моря',
     'Неуютное бунгало по колено в воде'];
   var TYPES = ['palace', 'flat', 'house', 'bungalo']; */
-  var OFFER_TYPES = {
+  var OfferTypes = {
     flat: 'Квартира',
     palace: 'Дворец',
     house: 'Домик',
@@ -59,7 +59,7 @@
   };*/
 
   window.data = {
-    OFFER_TYPES: OFFER_TYPES,
+    OfferTypes: OfferTypes,
     getRandomItem: getRandomItem
   };
 

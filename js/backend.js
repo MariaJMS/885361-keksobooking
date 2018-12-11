@@ -19,27 +19,10 @@
     xhr.open('GET', URL);
 
     xhr.addEventListener('load', function () {
-      try {
-        var err;
-        switch (xhr.status) {
-          case 200:
-            onLoad(xhr.response);
-            break;
-          case 400:
-            err = 'Неверный запрос';
-            break;
-          case 404:
-            err = 'Ничего не найдено';
-            break;
-          default:
-            err = 'Статус ответа: ' + xhr.status + ' ' + xhr.statusText;
-            break;
-        }
-        if (err) {
-          onError(err);
-        }
-      } catch (error) {
-        onError(error.message);
+      if (xhr.status === 200) {
+        onLoad(xhr.response);
+      } else {
+        onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
     });
 
@@ -62,28 +45,13 @@
     xhr.timeout = 1000;
     xhr.open('POST', URL);
 
-    var err;
     xhr.addEventListener('load', function () {
-      try {
-        switch (xhr.status) {
-          case 200:
-            onLoad();
-            break;
-          case 400:
-            err = 'Неверный запрос';
-            break;
-          default:
-            err = 'Статус ответа: ' + xhr.status + ' ' + xhr.statusText;
-            break;
-        }
-        if (err) {
-          onError(err);
-        }
-      } catch (error) {
-        onError(error.message);
+      if (xhr.status === 200) {
+        onLoad(xhr.response);
+      } else {
+        onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
     });
-
     xhr.send(data);
   };
 
