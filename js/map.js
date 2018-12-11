@@ -129,17 +129,21 @@
   var onMapPinMainMouseUp = function () {
     unlockCard();
     window.form.setAddress();
-    window.pin.renderMapPins(window.data.notices);
-    // renderCards(window.data.notices);
+    window.pin.renderMapPins(window.pin.notices);
+    window.card.renderCards(window.pin.notices);
+    window.pin.generateMapPins(window.pin.notices);
     onCloseMapCardClick();
   };
 
-  // mapPinMain.addEventListener('mouseup', onMapPinMainMouseUp);
+  mapPinMain.addEventListener('mouseup', onMapPinMainMouseUp);
 
   window.map = {
     userDialog: userDialog,
     showMapCard: showMapCard,
-    mapPinMain: mapPinMain
+    mapPinMain: mapPinMain,
+    mapPinMainWidth: mapPinMainWidth,
+    mapPinMainHeight: mapPinMainHeight,
+    mapWidth: mapWidth
   };
 
 })();

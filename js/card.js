@@ -12,10 +12,10 @@
     return photoElement;
   };
 
-  var generatePhotoInCard = function () {
+  var generatePhotoInCard = function (photos) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < window.data.PHOTOS.length; i++) {
-      fragment.appendChild(createPhoto(window.data.PHOTOS[i]));
+    for (var i = 0; i < photos.length; i++) {
+      fragment.appendChild(createPhoto(photos[i]));
     }
     return fragment;
   };
@@ -40,7 +40,7 @@
     cardElement.querySelector('.popup__title').textContent = notice.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = notice.offer.address;
     cardElement.querySelector('.popup__text--price').textContent = notice.offer.price + '₽/ночь';
-    cardElement.querySelector('.popup__type').textContent = window.data.OFFER_TYPES[notice.offer.type];
+    cardElement.querySelector('.popup__type').textContent = window.data.OfferTypes[notice.offer.type];
     cardElement.querySelector('.popup__text--capacity').textContent = notice.offer.rooms + ' комнаты для ' + notice.offer.guests + ' гостей';
     cardElement.querySelector('.popup__text--time').textContent = 'Заезд после' + notice.offer.checkin + ', выезд до' + notice.offer.checkout;
     cardElement.querySelector('.popup__features').appendChild(getPopupFeatureList(notice.offer.features));
@@ -74,6 +74,10 @@
     userDialog.insertBefore(fragment, nextSibling);
   };
 
-  renderCards(window.data.notices);
+  renderCards(window.pin.notices);
+
+  window.card = {
+    renderCards: renderCards
+  };
 
 })();

@@ -2,6 +2,9 @@
 
 (function () {
 
+  var main = document.querySelector('main');
+  var NUMBER_NOTICE = 8;
+
   // создаем DOM-элементы, соответствующие меткам на карте
   var mapPin = document.querySelector('#pin').content.querySelector('.map__pin');
   var createMapPin = function (notice, index) {
@@ -21,16 +24,54 @@
   };
 
   var mapPins = document.querySelector('.map__pins');
-  var renderMapPins = function (notice) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < notice.length; i++) {
-      fragment.appendChild(createMapPin(notice[i], i));
+
+  var notices = [];
+  var renderMapPins = function (dataArr) {
+    for (var i = 0; i < NUMBER_NOTICE; i++) {
+      var dataArrItem = window.data.getRandomItem(dataArr);
+      notices.push(dataArrItem);
+    }
+    return notices;
+  };
+
+  var fragment = document.createDocumentFragment();
+  var generateMapPins = function (dataArr) {
+    for (var i = 0; i < NUMBER_NOTICE; i++) {
+      fragment.appendChild(createMapPin(dataArr[i], i));
     }
     mapPins.appendChild(fragment);
   };
 
+  // окно с ошибкой отправки формы
+  var showError = function (errMes) {
+    var error = document.querySelector('#error').content.querySelector('.error');
+    var errorElement = error.cloneNode(true);
+    var errMsg = errorElement.querySelector('.error__message');
+    var errBtn = errorElement.querySelector('.error__button');
+    errMsg.textContent = errMes;
+
+    main.insertAdjacentElement('afterbegin', errorElement);
+    document.addEventListener('keydown', closeError);
+    errorElement.addEventListener('click', closeError);
+    errBtn.addEventListener('click', closeError);
+  };
+
+  var closeError = function () {
+    var errorElement = document.querySelector('.error');
+    main.removeChild(errorElement);
+    document.removeEventListener('keydown', closeError);
+    errorElement.removeEventListener('click', closeError);
+    window.form.onSubmit();
+  };
+
+  window.backend.loadData(renderMapPins, showError);
+
   window.pin = {
-    renderMapPins: renderMapPins
+    renderMapPins: renderMapPins,
+    notices: notices,
+    NUMBER_NOTICE: NUMBER_NOTICE,
+    generateMapPins: generateMapPins,
+    showError: showError
   };
 
 })();
