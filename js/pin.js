@@ -14,19 +14,24 @@
     mapPinElement.querySelector('img').src = notice.author.avatar;
     mapPinElement.querySelector('img').alt = notice.offer.title;
 
-    mapPinElement.dataset.ad = index;
+    mapPinElement.dataset.notice = index;
     // показ карточки с подробной информацией
     mapPinElement.addEventListener('click', function () {
       window.map.showMapCard(index);
     });
 
     return mapPinElement;
+
   };
 
   var mapPins = document.querySelector('.map__pins');
 
   var notices = [];
   var renderMapPins = function (dataArr) {
+    var allPins = document.querySelectorAll('button.map__pin:not(.map__pin--main)');
+    allPins.forEach(function (item) {
+      item.remove();
+    });
     for (var i = 0; i < NUMBER_NOTICE; i++) {
       var dataArrItem = window.data.getRandomItem(dataArr);
       notices.push(dataArrItem);
