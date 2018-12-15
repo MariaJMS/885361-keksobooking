@@ -3,7 +3,7 @@
 (function () {
 
   var main = document.querySelector('main');
-  var NUMBER_NOTICE = 8;
+  var mapPins = document.querySelector('.map__pins');
 
   // создаем DOM-элементы, соответствующие меткам на карте
   var mapPin = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -13,36 +13,36 @@
     mapPinElement.style.top = notice.location.y + 'px';
     mapPinElement.querySelector('img').src = notice.author.avatar;
     mapPinElement.querySelector('img').alt = notice.offer.title;
+    mapPinElement.setAttribute('data-index', index);
 
-    mapPinElement.dataset.notice = index;
-    // показ карточки с подробной информацией
-    mapPinElement.addEventListener('click', function () {
-      window.map.showMapCard(index);
+    mapPinElement.addEventListener('click', function (evt) {
+
+      var allPins = window.map.userDialog.querySelectorAll('.map__pin');
+      allPins.forEach(function (current) {
+        current.classList.remove('map__pin--active');
+      });
+
+      var mapFilters = document.querySelector('.map__filters-container');
+      var currentElement = evt.currentTarget;
+      currentElement.classList.add('map__pin--active');
+      var elementIndex = currentElement.dataset.index;
+      window.map.userDialog.insertBefore(window.card.createCards(window.dataArrayCopy[elementIndex]), mapFilters);
     });
 
     return mapPinElement;
-
   };
 
-  var mapPins = document.querySelector('.map__pins');
+  var fragment = document.createDocumentFragment();
+  var renderMapPins = function () {
 
-  var notices = [];
-  var renderMapPins = function (dataArr) {
     var allPins = document.querySelectorAll('button.map__pin:not(.map__pin--main)');
     allPins.forEach(function (item) {
       item.remove();
     });
-    for (var i = 0; i < NUMBER_NOTICE; i++) {
-      var dataArrItem = window.data.getRandomItem(dataArr);
-      notices.push(dataArrItem);
-    }
-    return notices;
-  };
-
-  var fragment = document.createDocumentFragment();
-  var generateMapPins = function (dataArr) {
-    for (var i = 0; i < NUMBER_NOTICE; i++) {
-      fragment.appendChild(createMapPin(dataArr[i], i));
+    for (var i = 0; i < window.dataArrayCopy.length; i++) {
+      if (window.dataArrayCopy[i]) {
+        fragment.appendChild(createMapPin(window.dataArrayCopy[i], i));
+      }
     }
     mapPins.appendChild(fragment);
   };
@@ -51,14 +51,14 @@
   var showError = function (errMes) {
     var error = document.querySelector('#error').content.querySelector('.error');
     var errorElement = error.cloneNode(true);
-    var errMsg = errorElement.querySelector('.error__message');
-    var errBtn = errorElement.querySelector('.error__button');
-    errMsg.textContent = errMes;
+    var errorMessage = errorElement.querySelector('.error__message');
+    var errorButton = errorElement.querySelector('.error__button');
+    errorMessage.textContent = errMes;
 
     main.insertAdjacentElement('afterbegin', errorElement);
     document.addEventListener('keydown', closeError);
     errorElement.addEventListener('click', closeError);
-    errBtn.addEventListener('click', closeError);
+    errorButton.addEventListener('click', closeError);
   };
 
   var closeError = function () {
@@ -69,13 +69,8 @@
     window.form.onSubmit();
   };
 
-  window.backend.loadData(renderMapPins, showError);
-
   window.pin = {
     renderMapPins: renderMapPins,
-    notices: notices,
-    NUMBER_NOTICE: NUMBER_NOTICE,
-    generateMapPins: generateMapPins,
     showError: showError
   };
 
