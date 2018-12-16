@@ -35,28 +35,30 @@
 
   // установка соответствия количества гостей количеству комнат
   var roomNumber = document.querySelector('#room_number');
-  var capacity = document.querySelector('#capacity');
+  var capacityForm = document.querySelector('#capacity');
+  var option = capacityForm.querySelectorAll('option');
+
+  var possiblyCapacity = {
+    '1': ['1'],
+    '2': ['1', '2'],
+    '3': ['1', '2', '3'],
+    '100': ['0']
+  };
 
   var onRoomsSelect = function () {
-
-    if ((roomNumber.value === '1') && (capacity.value !== '1')) {
-      capacity.setCustomValidity('В одной комнате - один гость');
-    } else if ((roomNumber.value === '100') && (capacity.value === '0')) {
-      capacity.setCustomValidity('');
-    } else if ((roomNumber.value !== '100') && (capacity.value === '0')) {
-      capacity.setCustomValidity('Не для гостей только 100 комнат');
-    } else if ((roomNumber.value === '100') && (capacity.value !== '0')) {
-      capacity.setCustomValidity('Столько комнат не для гостей');
-    } else if (roomNumber.value >= capacity.value) {
-      capacity.setCustomValidity('');
-    } else {
-      capacity.setCustomValidity('Максимум 2 гостя');
+    var capacity = possiblyCapacity[roomNumber.value];
+    for (var i = 0; i < option.length; i++) {
+      if (capacity.indexOf(option[i].value) === -1) {
+        option[i].setAttribute('disabled', true);
+      } else {
+        option[i].removeAttribute('disabled');
+      }
     }
   };
 
   onRoomsSelect();
   roomNumber.addEventListener('change', onRoomsSelect);
-  capacity.addEventListener('change', onRoomsSelect);
+  capacityForm.addEventListener('change', onRoomsSelect);
 
   // ограничения на поле "Заголовок"
   var titleInput = adForm.querySelector('#title');
