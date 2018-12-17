@@ -9,6 +9,7 @@
     house: 'Домик',
     bungalo: 'Бунгало'
   };
+
   var idCard = document.querySelector('#card');
   var userDialog = document.querySelector('.map');
 
@@ -31,12 +32,12 @@
   var featureTemplate = document.createElement('li');
   featureTemplate.classList.add('popup__feature');
 
-  var getPopupFeatureList = function (features) {
+  var generateFeatureList = function (features) {
     var fragment = document.createDocumentFragment();
     features.forEach(function (feature) {
-      var item = featureTemplate.cloneNode(true);
-      item.classList.add('popup__feature--' + feature);
-      fragment.appendChild(item);
+      var featuresElement = featureTemplate.cloneNode(true);
+      featuresElement.classList.add('popup__feature--' + feature);
+      fragment.appendChild(featuresElement);
     });
     return fragment;
   };
@@ -69,7 +70,7 @@
     cardElement.querySelector('.popup__type').textContent = OfferTypes[notice.offer.type];
     cardElement.querySelector('.popup__text--capacity').textContent = notice.offer.rooms + ' комнаты для ' + notice.offer.guests + ' гостей';
     cardElement.querySelector('.popup__text--time').textContent = 'Заезд после' + notice.offer.checkin + ', выезд до' + notice.offer.checkout;
-    cardElement.querySelector('.popup__features').appendChild(getPopupFeatureList(notice.offer.features));
+    cardElement.querySelector('.popup__features').appendChild(generateFeatureList(notice.offer.features));
     cardElement.querySelector('.popup__description').textContent = notice.offer.description;
     cardElement.querySelector('.popup__photos').appendChild(generatePhotoInCard(notice.offer.photos));
     cardElement.querySelector('.popup__avatar').src = notice.author.avatar;
