@@ -6,7 +6,7 @@
   var avatarChooser = document.querySelector('.ad-form__field input[type=file]');
   var previewAvatar = document.querySelector('.ad-form-header__preview img');
 
-  var loadingAvatar = function () {
+  var onAvatarChange = function () {
     var file = avatarChooser.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -32,7 +32,7 @@
 
   imageChooser.setAttribute('multiple', true);
 
-  var makeImg = function (img, src) {
+  var makeImg = function (src) {
     var picture = previewImage.cloneNode(true);
     var image = document.createElement('img');
     picture.appendChild(image);
@@ -43,11 +43,10 @@
     return picture;
   };
 
-  var loadingImages = function () {
-    var files = imageChooser.files;
-    var arrFiles = Array.from(files);
+  var onImagesUpload = function () {
+    var files = Array.from(imageChooser.files);
 
-    arrFiles.forEach(function (item) {
+    files.forEach(function (item) {
       var filesName = item.name.toLowerCase();
       var matches = FILE_TYPES.some(function (it) {
         return filesName.endsWith(it);
@@ -57,7 +56,7 @@
         var reader = new FileReader();
 
         reader.addEventListener('load', function () {
-          var images = makeImg(item, reader.result);
+          var images = makeImg(reader.result);
           photoContainer.appendChild(images);
           previewImage.remove('div:first-child');
         });
@@ -67,7 +66,7 @@
     });
   };
 
-  avatarChooser.addEventListener('change', loadingAvatar);
-  imageChooser.addEventListener('change', loadingImages);
+  avatarChooser.addEventListener('change', onAvatarChange);
+  imageChooser.addEventListener('change', onImagesUpload);
 
 })();

@@ -2,20 +2,13 @@
 
 (function () {
 
-  var OFFER_PRICE = {
-    'palace': 10000,
-    'flat': 1000,
-    'house': 5000,
-    'bungalo': 0
-  };
-
   var adForm = document.querySelector('.ad-form');
 
   // Отключаем поля формы
   var fieldset = document.querySelectorAll('fieldset');
   var lockCard = function () {
-    fieldset.forEach(function (elem) {
-      elem.setAttribute('disabled', 'true');
+    fieldset.forEach(function (field) {
+      field.setAttribute('disabled', 'true');
     });
   };
   lockCard();
@@ -27,11 +20,7 @@
     address.setAttribute('readonly', 'true');
   };
 
-  var addressSetting = function () {
-    setAddress();
-  };
-
-  window.map.mapPinMain.addEventListener('mouseup', addressSetting);
+  window.map.mapPinMain.addEventListener('mouseup', setAddress);
 
   // установка соответствия количества гостей количеству комнат
   var roomNumber = document.querySelector('#room_number');
@@ -45,7 +34,7 @@
     '100': ['0']
   };
 
-  var onRoomsSelect = function () {
+  var roomsSelect = function () {
     var capacity = possiblyCapacity[roomNumber.value];
     for (var i = 0; i < option.length; i++) {
       if (capacity.indexOf(option[i].value) === -1) {
@@ -56,37 +45,44 @@
     }
   };
 
-  onRoomsSelect();
-  roomNumber.addEventListener('change', onRoomsSelect);
-  capacityForm.addEventListener('change', onRoomsSelect);
+  roomsSelect();
+  roomNumber.addEventListener('change', roomsSelect);
 
   // ограничения на поле "Заголовок"
   var titleInput = adForm.querySelector('#title');
   titleInput.setAttribute('required', true);
 
   titleInput.addEventListener('invalid', function () {
+    var message;
     if (titleInput.validity.tooShort) {
-      titleInput.setCustomValidity('Заголовок должен содержать не менее 30 символов');
+      message = 'Заголовок должен содержать не менее 30 символов';
     } else if (titleInput.validity.tooLong) {
-      titleInput.setCustomValidity('Заголовок должен содержать не более 100 символов');
+      message = 'Заголовок должен содержать не более 100 символов';
     } else if (titleInput.validity.valueMissing) {
-      titleInput.setCustomValidity('Обязательное поле');
+      message = 'Обязательное поле';
     } else {
-      titleInput.setCustomValidity('');
+      message = '';
     }
+    titleInput.setCustomValidity(message);
   });
-
-  // ограничения на поле "Цена"
-  var priceInput = adForm.querySelector('#price');
-  priceInput.setAttribute('required', true);
 
   // ограничения на поля "Тип жилья" и "Цена за ночь"
   var typeOfHousing = adForm.querySelector('#type');
   var housingPrice = adForm.querySelector('#price');
   var onFormTypeChange = function () {
-    var minValue = OFFER_PRICE[typeOfHousing.value];
-    housingPrice.placeholder = minValue;
-    housingPrice.min = minValue;
+    if (typeOfHousing.value === 'bungalo') {
+      housingPrice.placeholder = '0';
+      housingPrice.min = '0';
+    } else if (typeOfHousing.value === 'flat') {
+      housingPrice.placeholder = '1000';
+      housingPrice.min = '1000';
+    } else if (typeOfHousing.value === 'house') {
+      housingPrice.placeholder = '5000';
+      housingPrice.min = '5000';
+    } else {
+      housingPrice.placeholder = '10000';
+      housingPrice.min = '10000';
+    }
   };
 
   typeOfHousing.addEventListener('change', onFormTypeChange);
@@ -110,13 +106,13 @@
   var mapWidth = window.map.mapWidth;
   var mapHeight = window.map.userDialog.offsetHeight;
 
-  var mainPinWidth = window.map.mapPinMainWidth;
-  var mainPinStartHeight = window.map.mapPinMainHeight;
+  var mainPinWidth = window.map.mapPinMain.offsetWidth;
+  var mainPinStartHeight = window.map.mapPinMain.offsetHeight;
 
   var mapCenterY = mapHeight / 2 - mainPinStartHeight / 2;
   var mapCenterX = mapWidth / 2 - mainPinWidth / 2;
 
-  var onSubmit = function () {
+  var resetForm = function () {
     adForm.reset();
     window.map.mapPinMain.style = 'left:' + mapCenterX + 'px; top:' + mapCenterY + 'px;';
 
@@ -150,23 +146,46 @@
   };
 
   var saveForm = function () {
-    onSubmit();
+    resetForm();
     showSuccess();
   };
 
+  // окно с ошибкой отправки формы
+  var showError = function (errMes) {
+    var error = document.querySelector('#error').content.querySelector('.error');
+    var errorElement = error.cloneNode(true);
+    var errorMessage = errorElement.querySelector('.error__message');
+    var errorButton = errorElement.querySelector('.error__button');
+    errorMessage.textContent = errMes;
+
+    main.insertAdjacentElement('afterbegin', errorElement);
+    document.addEventListener('keydown', closeError);
+    errorElement.addEventListener('click', closeError);
+    errorButton.addEventListener('click', closeError);
+  };
+
+  var closeError = function () {
+    var errorElement = document.querySelector('.error');
+    main.removeChild(errorElement);
+    document.removeEventListener('keydown', closeError);
+    errorElement.removeEventListener('click', closeError);
+    window.form.resetForm();
+  };
+
   adForm.addEventListener('submit', function (evt) {
-    window.backend.saveData(new FormData(adForm), saveForm, window.pin.showError);
+    window.backend.saveData(new FormData(adForm), saveForm, showError);
     evt.preventDefault();
   });
 
   // сброс формы при нажатии кнопки "Очистить"
   var resetButton = document.querySelector('.ad-form__reset');
-  resetButton.addEventListener('click', onSubmit);
+  resetButton.addEventListener('click', resetForm);
 
   window.form = {
     fieldset: fieldset,
     address: address,
-    onSubmit: onSubmit
+    resetForm: resetForm,
+    showError: showError
   };
 
 })();

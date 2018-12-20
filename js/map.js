@@ -7,6 +7,11 @@
   var setup = document.querySelector('.map__pins');
   var mapPinMain = setup.querySelector('.map__pin--main');
 
+  var onLoad = function (dataArray) {
+    window.pin.renderMapPins(dataArray);
+    window.filters.initializeFilters(dataArray);
+  };
+
   // Активация страницы
   var unlockCard = function () {
     userDialog.classList.remove('map--faded');
@@ -14,7 +19,7 @@
     window.form.fieldset.forEach(function (elem) {
       elem.removeAttribute('disabled', 'true');
     });
-    window.backend.loadData(window.pin.renderMapPins, window.pin.showError);
+    window.backend.loadData(onLoad, window.form.showError);
   };
 
   // перемещение главной метки
@@ -97,8 +102,6 @@
   window.map = {
     userDialog: userDialog,
     mapPinMain: mapPinMain,
-    mapPinMainWidth: mapPinMainWidth,
-    mapPinMainHeight: mapPinMainHeight,
     mapWidth: mapWidth
   };
 
