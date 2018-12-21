@@ -7,6 +7,16 @@
   var setup = document.querySelector('.map__pins');
   var mapPinMain = setup.querySelector('.map__pin--main');
 
+  var onLoad = function (dataArray) {
+    window.pin.renderMapPins(dataArray);
+    window.filters.initializeFilters(dataArray);
+  };
+
+  var loadData = function () {
+    window.backend.loadData(onLoad, window.form.showError);
+  };
+  mapPinMain.addEventListener('mouseup', loadData);
+
   // Активация страницы
   var unlockCard = function () {
     userDialog.classList.remove('map--faded');
@@ -14,7 +24,7 @@
     window.form.fieldset.forEach(function (elem) {
       elem.removeAttribute('disabled', 'true');
     });
-    window.backend.loadData(window.pin.renderMapPins, window.pin.showError);
+    mapPinMain.removeEventListener('mouseup', loadData);
   };
 
   // перемещение главной метки
@@ -24,8 +34,8 @@
   var mapWidth = userDialog.offsetWidth;
 
   var mapPinsLimits = {
-    MIN_Y: 130 - mainPinHeight,
-    MAX_Y: 630,
+    MIN_Y: 150 - mainPinHeight,
+    MAX_Y: 650,
     MIN_X: 0 - mapPinMainWidth / 2,
     MAX_X: mapWidth - mapPinMainWidth / 2
   };
@@ -97,8 +107,6 @@
   window.map = {
     userDialog: userDialog,
     mapPinMain: mapPinMain,
-    mapPinMainWidth: mapPinMainWidth,
-    mapPinMainHeight: mapPinMainHeight,
     mapWidth: mapWidth
   };
 

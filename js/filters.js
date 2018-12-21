@@ -1,6 +1,6 @@
 'use strict';
 (function () {
-
+  var notices = [];
   var housingPriceDictionary = {
     'any': {
       minPrice: 0,
@@ -27,34 +27,36 @@
   var housingGuests = window.map.userDialog.querySelector('#housing-guests');
   var housingFeatures = window.map.userDialog.querySelectorAll('.map__checkbox');
 
-  var getFilterParameterType = function (arr, filterFormElement) {
+  var getFilterParameterType = function (pin, filterFormElement) {
     if (filterFormElement.value === 'any') {
       return true;
     }
-    return arr.offer.type === filterFormElement.value;
+    return pin.offer.type === filterFormElement.value;
   };
 
-  var getFilterParameterPrice = function (arr, filterFormElement) {
-    var minPrice = housingPriceDictionary[filterFormElement.value].minPrice;
-    var maxPrice = housingPriceDictionary[filterFormElement.value].maxPrice;
+  var getFilterParameterPrice = function (pin, filterFormElement) {
+    var priceView = housingPriceDictionary[filterFormElement.value];
+
+    var minPrice = priceView.minPrice;
+    var maxPrice = priceView.maxPrice;
     if (filterFormElement.value === 'any') {
       return true;
     }
-    return arr.offer.price >= minPrice && arr.offer.price <= maxPrice;
+    return pin.offer.price >= minPrice && pin.offer.price <= maxPrice;
   };
 
-  var getFilterParameterRooms = function (arr, filterFormElement) {
+  var getFilterParameterRooms = function (pin, filterFormElement) {
     if (filterFormElement.value === 'any') {
       return true;
     }
-    return arr.offer.rooms === Number(filterFormElement.value);
+    return pin.offer.rooms === Number(filterFormElement.value);
   };
 
-  var getFilterParameterGuests = function (arr, filterFormElement) {
+  var getFilterParameterGuests = function (pin, filterFormElement) {
     if (filterFormElement.value === 'any') {
       return true;
     }
-    return arr.offer.guests === Number(filterFormElement.value);
+    return pin.offer.guests === Number(filterFormElement.value);
   };
 
   var selectedFeatures = [];
@@ -67,8 +69,8 @@
     });
   };
 
-  var getFilterParameterFeatures = function (arr) {
-    var features = arr.offer.features;
+  var getFilterParameterFeatures = function (pin) {
+    var features = pin.offer.features;
     var pickedFeatures = selectedFeatures;
     for (var i = 0; i < pickedFeatures.length; i++) {
       if (features.indexOf(pickedFeatures[i]) === -1) {
@@ -78,22 +80,26 @@
     return true;
   };
 
-  var onFiltersChange = function () {
+  var onFiltersChange = function (evt) {
+    evt.preventDefault();
     updateFeatures();
-    var filtersArr = window.dataArray.filter(function (filtredData) {
-      var arrType = getFilterParameterType(filtredData, housingType);
-      var arrPrice = getFilterParameterPrice(filtredData, housingPrice);
-      var arrRooms = getFilterParameterRooms(filtredData, housingRoms);
-      var arrGuests = getFilterParameterGuests(filtredData, housingGuests);
-      var arrFeatures = getFilterParameterFeatures(filtredData);
-
-      return arrType && arrPrice && arrRooms && arrGuests && arrFeatures;
+    var filtersPin = notices.filter(function (filtredData) {
+      return getFilterParameterType(filtredData, housingType) &&
+      getFilterParameterPrice(filtredData, housingPrice) &&
+      getFilterParameterRooms(filtredData, housingRoms) &&
+      getFilterParameterGuests(filtredData, housingGuests) &&
+      getFilterParameterFeatures(filtredData);
     });
 
-    window.dataArrayCopy = filtersArr;
-    window.utils.debounce(window.pin.renderMapPins);
-
+    window.utils.debounce(window.pin.renderMapPins, filtersPin);
   };
 
-  mapFiltersForm.addEventListener('change', onFiltersChange);
+  var initializeFilters = function (dataArray) {
+    notices = dataArray;
+    mapFiltersForm.addEventListener('change', onFiltersChange);
+  };
+
+  window.filters = {
+    initializeFilters: initializeFilters
+  };
 })();
