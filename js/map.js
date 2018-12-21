@@ -34,8 +34,8 @@
   var mapWidth = userDialog.offsetWidth;
 
   var mapPinsLimits = {
-    MIN_Y: 150 - mainPinHeight,
-    MAX_Y: 650,
+    MIN_Y: 180 - mainPinHeight,
+    MAX_Y: 620,
     MIN_X: 0 - mapPinMainWidth / 2,
     MAX_X: mapWidth - mapPinMainWidth / 2
   };
