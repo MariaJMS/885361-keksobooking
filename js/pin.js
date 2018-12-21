@@ -3,6 +3,7 @@
 (function () {
 
   var mapPins = document.querySelector('.map__pins');
+  var mapFilters = document.querySelector('.map__filters-container');
 
   // создаем DOM-элементы, соответствующие меткам на карте
   var mapPin = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -19,8 +20,6 @@
       allPins.forEach(function (current) {
         current.classList.remove('map__pin--active');
       });
-
-      var mapFilters = document.querySelector('.map__filters-container');
       var currentElement = evt.currentTarget;
       currentElement.classList.add('map__pin--active');
       window.map.userDialog.insertBefore(window.card.createCards(notice), mapFilters);
